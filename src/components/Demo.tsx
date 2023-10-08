@@ -13,6 +13,7 @@ function Demo() {
     summary: ''
   });
   const [allArticles, setAllArticles] = useState<Array<Article>>([]);
+  const [copied, setCopied] = useState("");
 
   const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
 
@@ -39,6 +40,13 @@ function Demo() {
     }
   };
 
+  const handleCopy = (copyUrl:string) => {
+    setCopied(copyUrl);
+    navigator.clipboard.writeText(copyUrl);
+
+    setTimeout(() => setCopied(""), 3000);
+  }
+
   return (
     <section className='mt-16 w-full max-w-xl'>
       <div className='flex flex-col w-full gap-2'>
@@ -50,8 +58,12 @@ function Demo() {
         <div className='flex flex-col gap-1 max-h-60 overflow-y-auto'>
           {allArticles.map((item, index) => (
             <div key={`link-${index}`} onClick={() => setArticle(item)} className='link_card'>
-              <div className='copy_btn'>
-                <img src={copy} alt="copy_icon" className='w-[40%] h-[40%] object-contain' />
+              <div className='copy_btn' onClick={() => handleCopy(item.url)}>
+                <img 
+                  src={copied === item.url ? tick : copy} 
+                  alt="copy_icon" 
+                  className='w-[40%] h-[40%] object-contain' 
+                />
               </div>
               <p className='flex-1 font-satoshi text-blue-700 font-medium text-sm truncate'>{item.url}</p>
             </div>
